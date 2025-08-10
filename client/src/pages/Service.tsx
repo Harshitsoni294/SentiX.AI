@@ -56,6 +56,15 @@ const Service = () => {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  // Helper: call serverless proxy (/api/reddit). If VITE_REDDIT_PROXY_BASE is set, use that origin.
+  const PROXY_BASE = (import.meta as any).env?.VITE_REDDIT_PROXY_BASE || '';
+  const redditProxy = useCallback(async (path: string) => {
+    const url = `${PROXY_BASE}/api/reddit${path}`;
+    const res = await fetch(url, { headers: { Accept: 'application/json' } });
+    if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`);
+    return res.json();
+  }, [PROXY_BASE]);
+
   // -------------------- Real Reddit Fetch --------------------
   // Fetch function: for given subs array, fetch posts (hot) and for each post fetch top N comments.
   const fetchRedditPosts = useCallback(async (subs: string[]) => {
@@ -69,21 +78,15 @@ const Service = () => {
     try {
       // For speed: fetch hot lists from all subs in parallel
       const subResponses = await Promise.allSettled(
-        subs.map(sub =>
-          fetch(`https://www.reddit.com/r/${encodeURIComponent(sub)}/hot.json?limit=12`)
-            .then(res => {
-              if (!res.ok) throw new Error(`Failed to fetch /r/${sub}`);
-              return res.json();
-            })
-        )
+        subs.map(sub => redditProxy(`?mode=list&sub=${encodeURIComponent(sub)}&limit=12`))
       );
 
       // Aggregate candidate posts
       const candidates: any[] = [];
       subResponses.forEach((r, idx) => {
         if (r.status === "fulfilled") {
-          const json = r.value;
-          const children = json?.data?.children || [];
+          const json = r.value as any;
+          const children = Array.isArray(json?.data?.children) ? json.data.children : [];
           children.forEach((c: any) => {
             const p = c.data;
             // filter out stickied and NSFW
@@ -110,11 +113,13 @@ const Service = () => {
       const postPromises = selectedCandidates.map(async (p: any) => {
         try {
           // Fetch the comments JSON for the post
-          const commentsRes = await fetch(`https://www.reddit.com${p.permalink}.json?limit=${COMMENTS_PER_POST}`);
-          const commentsJson = await commentsRes.json();
+          const perma = p.permalink?.replace(/\/+$/, '') || '';
+          const commentsJson = await redditProxy(`?mode=comments&permalink=${encodeURIComponent(perma)}&limit=${COMMENTS_PER_POST}`);
 
           // Top-level comments are in commentsJson[1].data.children
-          const rawComments = commentsJson?.[1]?.data?.children || [];
+          const rawComments = Array.isArray(commentsJson)
+            ? (commentsJson?.[1]?.data?.children || [])
+            : [];
 
           // Filter to real comments (kind === 't1') and ignore "more" entries
           const topComments = rawComments
