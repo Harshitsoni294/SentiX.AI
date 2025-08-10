@@ -209,7 +209,8 @@ const Service = () => {
       const padding = 80;
       const contentWidth = size - padding * 2;
 
-      const wrapText = (text: string, maxWidth: number, lineHeight: number, yStart: number) => {
+      // Helper to wrap text without drawing, returns array of lines
+      const getWrappedLines = (text: string, maxWidth: number) => {
         const words = text.split(" ");
         const lines: string[] = [];
         let current = "";
@@ -223,10 +224,7 @@ const Service = () => {
           }
         }
         if (current) lines.push(current);
-        lines.forEach((line, i) => {
-          ctx.fillText(line, size / 2, yStart + i * lineHeight);
-        });
-        return yStart + lines.length * lineHeight;
+        return lines;
       };
 
       // Draw title
@@ -236,14 +234,35 @@ const Service = () => {
         titleFontSize -= 2;
         ctx.font = `700 ${titleFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto`;
       }
-      let y = wrapText(editableTitle, contentWidth, titleFontSize * 1.2, padding);
+      // Pre-compute wrapped lines and total block height to vertically center
+      const titleLineHeight = titleFontSize * 1.2;
+      const titleLines = getWrappedLines(editableTitle, contentWidth);
 
       // Draw description
       const descFontSize = 36;
       ctx.font = `400 ${descFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto`;
       ctx.fillStyle = "rgba(255,255,255,0.95)";
-      y += 32;
-      wrapText(editableDescription, contentWidth, descFontSize * 1.4, y);
+      const descLineHeight = descFontSize * 1.4;
+      const descLines = getWrappedLines(editableDescription, contentWidth);
+
+      const gap = 32;
+      const totalHeight = titleLines.length * titleLineHeight + gap + descLines.length * descLineHeight;
+      let y = Math.max(padding, (size - totalHeight) / 2);
+
+      // Draw title centered block
+      ctx.font = `700 ${titleFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto`;
+      ctx.fillStyle = "#fff";
+      titleLines.forEach((line, i) => {
+        ctx.fillText(line, size / 2, y + i * titleLineHeight);
+      });
+      y += titleLines.length * titleLineHeight + gap;
+
+      // Draw description below title
+      ctx.font = `400 ${descFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto`;
+      ctx.fillStyle = "rgba(255,255,255,0.95)";
+      descLines.forEach((line, i) => {
+        ctx.fillText(line, size / 2, y + i * descLineHeight);
+      });
 
       // Footer branding
       ctx.font = `600 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto`;
