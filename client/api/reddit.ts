@@ -1,64 +1,74 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+// Edge Runtime version of the Reddit proxy to improve reliability on Vercel
+export const config = { runtime: 'edge' };
 
-// Simple Reddit proxy for hot posts and comments
 // GET /api/reddit?mode=list&sub=technology&limit=12
 // GET /api/reddit?mode=comments&permalink=/r/technology/comments/xxxxxx/post_title/&limit=9
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+export default async function handler(req: Request): Promise<Response> {
+  const url = new URL(req.url);
+  const mode = url.searchParams.get('mode') || 'list';
+  const limitParam = url.searchParams.get('limit') || '12';
+  const limit = Math.min(parseInt(limitParam, 10) || 12, 50);
 
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    res.status(204).end();
-    return;
+    return new Response(null, {
+      status: 204,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
   }
 
   try {
-    const { mode = 'list' } = req.query as { [key: string]: string };
-    const limit = Math.min(parseInt((req.query.limit as string) || '12', 10) || 12, 50);
-
     let target = '';
     if (mode === 'list') {
-      const sub = (req.query.sub as string) || '';
+      const sub = url.searchParams.get('sub') || '';
       if (!sub) {
-        res.status(400).json({ error: 'Missing sub' });
-        return;
+        return json({ error: 'Missing sub' }, 400);
       }
       const s = encodeURIComponent(sub);
       target = `https://www.reddit.com/r/${s}/hot.json?limit=${limit}&raw_json=1&api_type=json`;
     } else if (mode === 'comments') {
-      const permalink = (req.query.permalink as string) || '';
+      const permalink = url.searchParams.get('permalink') || '';
       if (!permalink || !permalink.startsWith('/')) {
-        res.status(400).json({ error: 'Missing or invalid permalink' });
-        return;
+        return json({ error: 'Missing or invalid permalink' }, 400);
       }
       const safe = permalink.replace(/\/+$/, '');
       target = `https://www.reddit.com${safe}.json?limit=${limit}&raw_json=1&api_type=json`;
     } else {
-      res.status(400).json({ error: 'Invalid mode' });
-      return;
+      return json({ error: 'Invalid mode' }, 400);
     }
 
     const upstream = await fetch(target, {
       headers: {
         'Accept': 'application/json',
-        // Reddit recommends a descriptive UA for API use
         'User-Agent': 'PostCraftAI/1.0 (contact: you@example.com)'
-      }
+      },
+      // Reddit may redirect; follow automatically
+      redirect: 'follow',
     });
 
-    if (!upstream.ok) {
-      const text = await upstream.text();
-      res.status(upstream.status).send(text);
-      return;
+    const headers = new Headers(upstream.headers);
+    headers.set('Access-Control-Allow-Origin', '*');
+    // Ensure content-type present
+    if (!headers.get('content-type')) {
+      headers.set('Content-Type', 'application/json; charset=utf-8');
     }
 
-    const contentType = upstream.headers.get('content-type') || 'application/json; charset=utf-8';
-    res.setHeader('Content-Type', contentType);
-    const buf = Buffer.from(await upstream.arrayBuffer());
-    res.status(200).send(buf);
+    return new Response(upstream.body, { status: upstream.status, headers });
   } catch (e: any) {
-    res.status(500).json({ error: String(e?.message || e) });
+    return json({ error: String(e?.message || e) }, 500);
   }
+}
+
+function json(data: unknown, status = 200): Response {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+  });
 }
