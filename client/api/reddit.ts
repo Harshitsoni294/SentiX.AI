@@ -8,6 +8,9 @@ export default async function handler(req: Request): Promise<Response> {
   const mode = url.searchParams.get('mode') || 'list';
   const limitParam = url.searchParams.get('limit') || '12';
   const limit = Math.min(parseInt(limitParam, 10) || 12, 50);
+  const CLIENT_ID = (process as any).env?.REDDIT_CLIENT_ID as string | undefined;
+  const CLIENT_SECRET = (process as any).env?.REDDIT_CLIENT_SECRET as string | undefined;
+  const APP_UA = (process as any).env?.APP_USER_AGENT as string | undefined;
 
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -22,6 +25,26 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   try {
+    // If credentials are present, try to obtain an app-only token and use oauth endpoints.
+    let bearer: string | null = null;
+    if (CLIENT_ID && CLIENT_SECRET) {
+      try {
+        const tokenRes = await fetch('https://www.reddit.com/api/v1/access_token', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Basic ' + btoa(`${CLIENT_ID}:${CLIENT_SECRET}`),
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent': APP_UA || 'PostCraftAI/1.0 (serverless edge)'
+          },
+          body: new URLSearchParams({ grant_type: 'client_credentials', scope: 'read' }),
+        });
+        if (tokenRes.ok) {
+          const td = await tokenRes.json().catch(() => null as any);
+          if (td?.access_token) bearer = td.access_token as string;
+        }
+      } catch { /* ignore, fallback to public */ }
+    }
+
     let target = '';
     if (mode === 'list') {
       const sub = url.searchParams.get('sub') || '';
@@ -29,14 +52,18 @@ export default async function handler(req: Request): Promise<Response> {
         return json({ error: 'Missing sub' }, 400);
       }
       const s = encodeURIComponent(sub);
-      target = `https://www.reddit.com/r/${s}/hot.json?limit=${limit}&raw_json=1&api_type=json`;
+      target = bearer
+        ? `https://oauth.reddit.com/r/${s}/hot?limit=${limit}&raw_json=1&api_type=json`
+        : `https://www.reddit.com/r/${s}/hot.json?limit=${limit}&raw_json=1&api_type=json`;
     } else if (mode === 'comments') {
       const permalink = url.searchParams.get('permalink') || '';
       if (!permalink || !permalink.startsWith('/')) {
         return json({ error: 'Missing or invalid permalink' }, 400);
       }
       const safe = permalink.replace(/\/+$/, '');
-      target = `https://www.reddit.com${safe}.json?limit=${limit}&raw_json=1&api_type=json`;
+      target = bearer
+        ? `https://oauth.reddit.com${safe}?limit=${limit}&raw_json=1&api_type=json`
+        : `https://www.reddit.com${safe}.json?limit=${limit}&raw_json=1&api_type=json`;
     } else {
       return json({ error: 'Invalid mode' }, 400);
     }
@@ -44,7 +71,8 @@ export default async function handler(req: Request): Promise<Response> {
     const upstream = await fetch(target, {
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'PostCraftAI/1.0 (contact: you@example.com)'
+        'User-Agent': APP_UA || 'PostCraftAI/1.0 (serverless edge)',
+        ...(bearer ? { 'Authorization': `Bearer ${bearer}` } : {}),
       },
       // Reddit may redirect; follow automatically
       redirect: 'follow',
