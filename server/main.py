@@ -28,6 +28,10 @@ if os.getenv("GOOGLE_API_KEY") in (None, "") and os.getenv("GEMINI_API_KEY"):
     os.environ["GOOGLE_API_KEY"] = os.getenv("GEMINI_API_KEY")
 client = genai.Client()
 
+@app.get("/")
+async def root():
+    return {"message": "API is live!"}
+    
 class RephraseRequest(BaseModel):
     content: str
 
