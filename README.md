@@ -19,34 +19,17 @@
 
 ---
 
-## 🚀 Project Structure  
-sentix/
-├── client/ # React frontend
-├── server/ # FastAPI backend
-├── docs/ # Documentation
-├── public/ # Static assets
-├── src/ # Shared configs/components
-├── package.json # Frontend dependencies
-├── requirements.txt # Backend dependencies
-
-text
-
----
-
 ## ⚡ Setup Instructions  
 
 ### 1️⃣ Clone the repo  
 git clone https://github.com/Harshitsoni294/SentiX.AI.git
 cd SentiX.AI
 
-text
 
 ### 2️⃣ Setup Client (Frontend) 🖥️  
 cd client
 npm install
 npm run dev
-
-text
 
 📄 **.env (Client)**  
 REDDIT_CLIENT_ID=your_id_here
@@ -55,7 +38,6 @@ APP_USER_AGENT=your_user_agent_here
 VITE_REDDIT_PROXY_BASE=http://localhost:8080
 VITE_API_BASE=http://localhost:8000
 
-text
 
 ---
 
@@ -68,12 +50,9 @@ venv\Scripts\activate # Windows
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 
-text
 
 📄 **.env (Server)**  
 GEMINI_API_KEY=your_gemini_api_key_here
-
-text
 
 ---
 
