@@ -1,7 +1,7 @@
 import React from 'react';
-import { ArrowRight, Zap, Brain, Instagram, Download, Edit3, TrendingUp, Sparkles, Globe, MessageCircle } from 'lucide-react';
+import { ArrowRight, Zap, Brain, Search, Download, Edit3, TrendingUp, Sparkles, Globe, MessageCircle, BarChart3, Building } from 'lucide-react';
 
-const PostFlowLanding = () => {
+const SentiXLanding = () => {
   const handleServiceRedirect = () => {
     window.location.href = '/Service';
   };
@@ -26,7 +26,7 @@ const PostFlowLanding = () => {
               <Sparkles className="w-6 h-6" />
             </div>
             <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              PostCraft.AI
+              SentiX.AI
             </span>
           </div>
           <div className="hidden md:flex space-x-8">
@@ -50,23 +50,22 @@ const PostFlowLanding = () => {
             <div className="text-center">
               <div className="inline-flex items-center space-x-2 bg-gray-800/40 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-gray-700/50">
                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span className="text-sm font-medium text-gray-300">AI-Powered Post Processing</span>
+                <span className="text-sm font-medium text-gray-300">AI-Powered Sentiment Insights</span>
               </div>
 
               <h1 className="text-5xl md:text-7xl font-black mb-8 leading-tight">
-                Transform
+                Turn Discussions
                 <br />
                 <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
-                  Reddit Post
+                  Into Powerful
                 </span>
                 <br />
-                Into Viral Content
+                Sentiment Insights
               </h1>
 
               <p className="text-xl text-gray-400 mb-10 max-w-4xl mx-auto leading-relaxed">
-                Harness the power of AI to transform trending Post from Reddit into 
-                engaging, shareable content for your Instagram. Design, edit, and share 
-                like a pro content creator.
+                Choose a company, let AI analyze public opinions from social media, news, and the web, 
+                and receive a ready-to-use sentiment report with actionable insights.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -75,7 +74,7 @@ const PostFlowLanding = () => {
                   className="group bg-gradient-to-r from-purple-600 to-pink-600 px-10 py-5 rounded-2xl text-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3 shadow-2xl"
                 >
                   <Zap className="w-6 h-6" />
-                  <span>Fetch Posts Now</span>
+                  <span>Start Analyzing</span>
                   <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </button>
                 <button className="border-2 border-gray-600 px-10 py-5 rounded-2xl text-lg font-semibold hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:border-gray-500">
@@ -93,13 +92,13 @@ const PostFlowLanding = () => {
                     <div className="w-4 h-4 bg-red-500 rounded-full"></div>
                     <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
                     <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                    <div className="ml-4 text-sm text-gray-400">PostCraft.AI Dashboard</div>
+                    <div className="ml-4 text-sm text-gray-400">SentiX.AI Dashboard</div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="bg-gray-800/60 rounded-2xl p-6 border border-gray-700/30 hover:bg-gray-800/80 transition-colors">
-                      <Globe className="w-8 h-8 text-blue-400 mb-4" />
-                      <h3 className="font-bold mb-2 text-white">Reddit Integration</h3>
-                      <p className="text-sm text-gray-400">Real-time trending Post fetching</p>
+                      <Building className="w-8 h-8 text-blue-400 mb-4" />
+                      <h3 className="font-bold mb-2 text-white">Company Selection</h3>
+                      <p className="text-sm text-gray-400">Choose from top companies or search custom</p>
                       <div className="mt-4 space-y-2">
                         <div className="h-2 bg-blue-500/30 rounded-full">
                           <div className="h-2 bg-blue-500 rounded-full w-3/4"></div>
@@ -108,16 +107,16 @@ const PostFlowLanding = () => {
                     </div>
                     <div className="bg-gray-800/60 rounded-2xl p-6 border border-gray-700/30 hover:bg-gray-800/80 transition-colors">
                       <Brain className="w-8 h-8 text-purple-400 mb-4" />
-                      <h3 className="font-bold mb-2 text-white">AI Processing</h3>
-                      <p className="text-sm text-gray-400">Smart content transformation</p>
+                      <h3 className="font-bold mb-2 text-white">AI Analysis</h3>
+                      <p className="text-sm text-gray-400">Smart sentiment processing & insights</p>
                       <div className="mt-4 flex justify-center">
                         <div className="w-8 h-8 border-2 border-purple-400 border-t-transparent rounded-full"></div>
                       </div>
                     </div>
                     <div className="bg-gray-800/60 rounded-2xl p-6 border border-gray-700/30 hover:bg-gray-800/80 transition-colors">
-                      <Instagram className="w-8 h-8 text-pink-400 mb-4" />
-                      <h3 className="font-bold mb-2 text-white">Instant sharing</h3>
-                      <p className="text-sm text-gray-400">Direct Instagram posting</p>
+                      <Download className="w-8 h-8 text-pink-400 mb-4" />
+                      <h3 className="font-bold mb-2 text-white">Instant Reports</h3>
+                      <p className="text-sm text-gray-400">Ready-to-use PDF sentiment reports</p>
                       <div className="mt-4 flex space-x-2">
                         <div className="w-4 h-4 bg-green-500 rounded-full"></div>
                         <div className="w-4 h-4 bg-green-500 rounded-full"></div>
@@ -136,10 +135,10 @@ const PostFlowLanding = () => {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-20">
               <h2 className="text-5xl md:text-6xl font-bold mb-6">
-                How <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">PostCraft.AI</span> Works
+                How <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">SentiX.AI</span> Works
               </h2>
               <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-                Four simple steps to transform trending Reddit Post into viral Instagram content
+                Five simple steps to get comprehensive sentiment analysis for any company
               </p>
             </div>
 
@@ -151,31 +150,38 @@ const PostFlowLanding = () => {
               {[
                 {
                   number: "01",
-                  title: "Fetch Trending Post",
-                  description: "Our system connects to Reddit API and pulls the hottest Post from relevant subreddits, analyzing upvotes and engagement.",
-                  icon: Globe,
+                  title: "Choose Company",
+                  description: "Pick from 6 featured companies or search for any company you want to analyze. Our system recognizes thousands of businesses worldwide.",
+                  icon: Building,
                   color: "from-blue-500 to-purple-500"
                 },
                 {
                   number: "02", 
-                  title: "AI Processing Magic",
-                  description: "Advanced AI analyzes post content and comments to understand context, sentiment, and key insights for compelling storytelling.",
-                  icon: Brain,
+                  title: "Fetch Public Data",
+                  description: "Pull real-time data from social media mentions, reviews, and public discussions across multiple platforms for comprehensive coverage.",
+                  icon: Globe,
                   color: "from-purple-500 to-pink-500"
                 },
                 {
                   number: "03",
-                  title: "Design & Customize", 
-                  description: "Choose from professional templates or create custom designs. Add your branding, adjust layouts, and craft the perfect post.",
-                  icon: Edit3,
+                  title: "Web Search Analysis", 
+                  description: "Gather live web search results, news articles, and recent content to understand current public perception and trending topics.",
+                  icon: Search,
                   color: "from-pink-500 to-orange-500"
                 },
                 {
                   number: "04",
-                  title: "share Instantly",
-                  description: "Download high-quality images or post directly to Instagram with optimized captions and hashtags for maximum reach.",
-                  icon: Instagram,
+                  title: "AI Processing",
+                  description: "Advanced AI analyzes sentiment, identifies trends, extracts key insights, and processes emotional patterns from all collected data.",
+                  icon: Brain,
                   color: "from-orange-500 to-red-500"
+                },
+                {
+                  number: "05",
+                  title: "Generate PDF Report",
+                  description: "Download a comprehensive, visual sentiment report with charts, insights, and actionable recommendations ready to share with your team.",
+                  icon: Download,
+                  color: "from-red-500 to-purple-500"
                 }
               ].map((step, index) => {
                 const StepIcon = step.icon;
@@ -225,46 +231,46 @@ const PostFlowLanding = () => {
                 Powerful <span className="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">Features</span>
               </h2>
               <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-                Everything you need to create viral content from Reddit Post
+                Everything you need to understand public sentiment about any company
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
                 { 
-                  icon: TrendingUp, 
-                  title: "Real-time Trending", 
-                  desc: "Always stay on top of the latest Post trends with live Reddit data",
+                  icon: BarChart3, 
+                  title: "Company Sentiment Tracking", 
+                  desc: "Monitor real-time sentiment trends and track how public opinion changes over time",
                   gradient: "from-green-500 to-blue-500"
                 },
                 { 
                   icon: Brain, 
-                  title: "AI Rewriting", 
-                  desc: "Smart content transformation with context awareness and sentiment analysis",
+                  title: "AI-Powered Insights", 
+                  desc: "Advanced AI algorithms analyze context, emotion, and meaning behind every mention",
                   gradient: "from-purple-500 to-pink-500"
                 },
                 { 
-                  icon: Instagram, 
-                  title: "Direct sharing", 
-                  desc: "One-click posting to your Instagram account with optimized formatting",
+                  icon: Globe, 
+                  title: "Social Media + Web Monitoring", 
+                  desc: "Comprehensive coverage across social platforms, news sites, and web discussions",
                   gradient: "from-pink-500 to-red-500"
                 },
                 { 
-                  icon: Edit3, 
-                  title: "Custom Templates", 
-                  desc: "Design your posts with professional templates and brand customization",
+                  icon: Download, 
+                  title: "Instant PDF Reports", 
+                  desc: "Professional, shareable reports with visual charts and actionable recommendations",
                   gradient: "from-blue-500 to-purple-500"
                 },
                 { 
-                  icon: MessageCircle, 
-                  title: "Comment Analysis", 
-                  desc: "Leverage Reddit comments for better insights and audience understanding",
+                  icon: TrendingUp, 
+                  title: "Comparative Analysis", 
+                  desc: "Compare sentiment across different time periods and benchmark against competitors",
                   gradient: "from-orange-500 to-red-500"
                 },
                 { 
-                  icon: Download, 
-                  title: "Multiple Formats", 
-                  desc: "Export in various formats for different platforms and use cases",
+                  icon: MessageCircle, 
+                  title: "24/7 Monitoring", 
+                  desc: "Continuous sentiment tracking with alerts for significant changes in public perception",
                   gradient: "from-cyan-500 to-blue-500"
                 }
               ].map((feature, index) => {
@@ -290,15 +296,15 @@ const PostFlowLanding = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10 blur-3xl"></div>
               <div className="relative bg-gray-900/40 backdrop-blur-xl rounded-3xl p-12 border border-gray-800/50 hover:bg-gray-900/50 transition-colors">
                 <div className="text-center mb-12">
-                  <h3 className="text-3xl font-bold text-white mb-4">Trusted by Content Creators</h3>
-                  <p className="text-gray-400">Join thousands who are already creating viral content</p>
+                  <h3 className="text-3xl font-bold text-white mb-4">Trusted by Business Analysts</h3>
+                  <p className="text-gray-400">Join thousands who are already understanding market sentiment</p>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                   {[
-                    { number: "50K+", label: "Post Processed" },
+                    { number: "10K+", label: "Companies Analyzed" },
                     { number: "95%", label: "Accuracy Rate" },
-                    { number: "24/7", label: "Uptime" },
-                    { number: "5M+", label: "Engagement Boost" }
+                    { number: "24/7", label: "Live Monitoring" },
+                    { number: "1M+", label: "Data Points Daily" }
                   ].map((stat, index) => (
                     <div key={index} className="text-center group">
                       <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 group-hover:scale-105 transition-transform">
@@ -320,12 +326,12 @@ const PostFlowLanding = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 blur-3xl"></div>
               <div className="relative bg-gray-900/50 backdrop-blur-xl rounded-3xl p-16 border border-gray-800/50 hover:bg-gray-900/60 transition-colors">
                 <h2 className="text-5xl md:text-6xl font-bold mb-8">
-                  Ready to Go
-                  <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> Viral?</span>
+                  Ready to Understand
+                  <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> Public Sentiment?</span>
                 </h2>
                 <p className="text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-                  Transform trending Reddit Post into engaging Instagram content with the power of AI. 
-                  Start creating viral posts that your audience will love.
+                  Discover how the world feels about your company with AI-powered sentiment analysis. 
+                  Get actionable insights that drive better business decisions.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">
                   <button 
@@ -333,7 +339,7 @@ const PostFlowLanding = () => {
                     className="group bg-gradient-to-r from-purple-600 to-pink-600 px-12 py-6 rounded-2xl text-xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3 shadow-2xl"
                   >
                     <Zap className="w-7 h-7" />
-                    <span>Start Creating Now</span>
+                    <span>Get Sentiment Report Now</span>
                     <ArrowRight className="w-7 h-7 group-hover:translate-x-1 transition-transform" />
                   </button>
                   <button className="border-2 border-gray-600 px-12 py-6 rounded-2xl text-xl font-bold hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:border-gray-500">
@@ -354,16 +360,16 @@ const PostFlowLanding = () => {
                   <Sparkles className="w-6 h-6" />
                 </div>
                 <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                PostCraft.AI
+                SentiX.AI
                 </span>
               </div>
               <p className="text-gray-400 max-w-2xl mx-auto">
-                Transforming Reddit Post into viral Instagram content with the power of AI. 
-                Join the content creation revolution.
+                AI-powered sentiment insights for companies in real-time. 
+                Understand public perception and make data-driven decisions.
               </p>
             </div>
             <div className="text-center text-gray-500 text-sm">
-              © 2025 PostCraft.AI. All rights reserved. Built with ❤️ for content creators.
+              © 2025 SentiX.AI. All rights reserved. Built with ❤️ for business intelligence.
             </div>
           </div>
         </footer>
@@ -372,4 +378,4 @@ const PostFlowLanding = () => {
   );
 };
 
-export default PostFlowLanding;
+export default SentiXLanding;
