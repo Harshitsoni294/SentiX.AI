@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(session?.user ?? null)
       setLoading(false)
       // Clear guest mode when user signs in
-      if (session) {
+      if (session?.user) {
         setIsGuest(false)
         localStorage.removeItem('sentix_guest_mode')
       }
@@ -68,6 +68,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email,
       password,
     })
+    
+    // Clear guest mode immediately on successful sign up
+    if (!error) {
+      setIsGuest(false)
+      localStorage.removeItem('sentix_guest_mode')
+    }
+    
     return { error }
   }
 
@@ -76,6 +83,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email,
       password,
     })
+    
+    // Clear guest mode immediately on successful sign in
+    if (!error) {
+      setIsGuest(false)
+      localStorage.removeItem('sentix_guest_mode')
+    }
+    
     return { error }
   }
 
@@ -92,10 +106,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const getDisplayName = () => {
+    if (user?.email) {
+      return user.email
+    }
     if (isGuest) {
       return 'Guest@SentiX'
     }
-    return user?.email || 'User'
+    return 'User'
   }
 
   const value = {

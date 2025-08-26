@@ -62,7 +62,7 @@ const SentiXLanding = () => {
           <div className="flex items-center space-x-4 ml-auto">
             <button 
               onClick={handleServiceRedirect}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2.5 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="hidden sm:block bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2.5 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               Get Started
             </button>
