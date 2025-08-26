@@ -1,9 +1,32 @@
-import React from 'react';
-import { ArrowRight, Zap, Brain, Search, Download, Edit3, TrendingUp, Sparkles, Globe, MessageCircle, BarChart3, Building } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight, Zap, Brain, Search, Download, Edit3, TrendingUp, Sparkles, Globe, MessageCircle, BarChart3, Building, User, LogIn, UserPlus } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { ProfileSidebar } from '@/components/ProfileSidebar';
 
 const SentiXLanding = () => {
+  const { user, isGuest } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [showProfileSidebar, setShowProfileSidebar] = useState(false);
+
   const handleServiceRedirect = () => {
-    window.location.href = '/Service';
+    if (user || isGuest) {
+      window.location.href = '/service';
+    } else {
+      setAuthMode('login');
+      setShowAuthModal(true);
+    }
+  };
+
+  const handleAuthClick = (mode: 'login' | 'signup') => {
+    setAuthMode(mode);
+    setShowAuthModal(true);
+  };
+
+  const handleSignupFromGuest = () => {
+    setAuthMode('signup');
+    setShowAuthModal(true);
   };
 
   return (
@@ -20,7 +43,7 @@ const SentiXLanding = () => {
 
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-gray-800/50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-6 py-4 relative flex items-center">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
               <Sparkles className="w-6 h-6" />
@@ -29,17 +52,37 @@ const SentiXLanding = () => {
               SentiX.AI
             </span>
           </div>
-          <div className="hidden md:flex space-x-8">
+          
+          <div className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
             <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
             <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">How It Works</a>
             <a href="#stats" className="text-gray-300 hover:text-white transition-colors">Stats</a>
           </div>
-          <button 
-            onClick={handleServiceRedirect}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2.5 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
-          >
-            Get Started
-          </button>
+          
+          <div className="flex items-center space-x-4 ml-auto">
+            <button 
+              onClick={handleServiceRedirect}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2.5 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Get Started
+            </button>
+            {(user || isGuest) ? (
+              <button
+                onClick={() => setShowProfileSidebar(true)}
+                className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-lg"
+              >
+                <User className="w-5 h-5" />
+              </button>
+            ) : (
+              <button
+                onClick={() => handleAuthClick('login')}
+                className="flex items-center space-x-2 px-4 py-2 text-gray-300 hover:text-white transition-colors"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Sign In</span>
+              </button>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -369,11 +412,25 @@ const SentiXLanding = () => {
               </p>
             </div>
             <div className="text-center text-gray-500 text-sm">
-              © 2025 SentiX.AI. All rights reserved. Built with ❤️ for business intelligence.
+              2025 SentiX.AI. All rights reserved. Built with for business intelligence.
             </div>
           </div>
         </footer>
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        initialMode={authMode}
+      />
+
+      {/* Profile Sidebar */}
+      <ProfileSidebar
+        isOpen={showProfileSidebar}
+        onClose={() => setShowProfileSidebar(false)}
+        onSignupClick={handleSignupFromGuest}
+      />
     </div>
   );
 };

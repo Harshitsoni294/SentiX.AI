@@ -2,10 +2,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Download, RefreshCw, Edit, Palette, Sparkles, TrendingUp, Users,
   MessageSquare, Star, Globe, Instagram, Facebook, Send, Code, Zap, Gamepad2,
-  Atom, DollarSign, Dumbbell, Film, BookOpen, MapPin, FileText, Share2, X
+  Atom, DollarSign, Dumbbell, Film, BookOpen, MapPin, FileText, Share2, X, User
 } from "lucide-react";
 import { FaReddit, FaWhatsapp } from 'react-icons/fa';
 import jsPDF from "jspdf"; // Change 1: import jsPDF for proper PDF generation
+import { useAuth } from '@/contexts/AuthContext';
+import { ProfileSidebar } from '@/components/ProfileSidebar';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
 
 
 // ------------------------------------
@@ -55,6 +60,10 @@ const COMMENTS_PER_POST = 9;
 
 
 const Service = () => {
+  const { user, isGuest, getDisplayName } = useAuth();
+  const [showProfileSidebar, setShowProfileSidebar] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  
   // STATE
   const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState<RedditPost[]>([]);
@@ -240,7 +249,7 @@ const Service = () => {
       // Change 1: Proper PDF generation using jsPDF
       const pdf = new jsPDF();
       pdf.text(aiReport, 10, 10, { maxWidth: 180 });
-      const blobUrl = pdf.output("bloburl");
+      const blobUrl = pdf.output("bloburl") as string;
       setPdfUrl(blobUrl);
     } catch (err: any) {
       // Log error for debugging fetch failures
@@ -251,6 +260,47 @@ const Service = () => {
   };
 
 
+  // Save report to Supabase with PDF data
+  const saveReportToSupabase = async () => {
+    if (!user || !aiText || !selectedTopic || isGuest) return;
+
+    try {
+      // Generate PDF and get base64 data
+      const pdf = new jsPDF();
+      pdf.text(aiText, 10, 10, { maxWidth: 180 });
+      const pdfBase64 = pdf.output('datauristring').split(',')[1]; // Remove data:application/pdf;base64, prefix
+
+      const sentimentData = {
+        overall_sentiment: posts.length > 0 ? 'positive' : 'neutral',
+        posts_analyzed: posts.length,
+        topic: selectedTopic,
+        generated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('sentiment_reports')
+        .insert({
+          user_id: user.id,
+          title: `Sentiment Report - ${selectedTopic}`,
+          content: aiText,
+          pdf_data: pdfBase64,
+          sentiment_data: sentimentData,
+          topic: selectedTopic,
+          posts_analyzed: posts.length
+        });
+
+      if (error) {
+        console.error('Error saving report:', error);
+        toast.error('Failed to save report');
+      } else {
+        toast.success('Report saved successfully!');
+      }
+    } catch (error) {
+      console.error('Error saving report:', error);
+      toast.error('Failed to save report');
+    }
+  };
+
   // Download AI PDF
   function handleDownloadReport() {
     if (!aiText || !selectedTopic) return;
@@ -258,6 +308,13 @@ const Service = () => {
     const pdf = new jsPDF();
     pdf.text(aiText, 10, 10, { maxWidth: 180 });
     pdf.save(`SentimentReport_${selectedTopic}.pdf`);
+    
+    // Save to Supabase if user is logged in (not guest)
+    if (user && !isGuest) {
+      saveReportToSupabase();
+    } else if (isGuest) {
+      toast.info('Report downloaded! Sign up to save your reports permanently.');
+    }
   }
 
 
@@ -325,15 +382,25 @@ const Service = () => {
 
 
       {/* HEADER */}
-      <header className="text-center py-12 px-4">
-      <div className="flex flex-col items-center gap-2 mb-6">
-  <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-purple-300 to-indigo-300 bg-clip-text text-transparent">
-    SentiX.AI
-  </h1>
-  <h2 className="text-lg font-semibold bg-gradient-to-r from-white via-purple-300 to-indigo-300 bg-clip-text text-transparent">
-    S m a r t _ S e n t i m e n t _ A n a l y z e r
-  </h2>
-</div>
+      <header className="relative text-center py-12 px-4">
+        {/* Profile Button - Fixed to Screen */}
+        {(user || isGuest) && (
+          <button
+            onClick={() => setShowProfileSidebar(true)}
+            className="fixed top-4 right-4 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-lg z-50"
+          >
+            <User className="w-6 h-6 text-white" />
+          </button>
+        )}
+        
+        <div className="flex flex-col items-center gap-2 mb-6">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-purple-300 to-indigo-300 bg-clip-text text-transparent">
+            SentiX.AI
+          </h1>
+          <h2 className="text-lg font-semibold bg-gradient-to-r from-white via-purple-300 to-indigo-300 bg-clip-text text-transparent">
+            S m a r t _ S e n t i m e n t _ A n a l y z e r
+          </h2>
+        </div>
 
         <p className="text-xl text-purple-200 max-w-3xl mx-auto leading-relaxed">
         Turn raw social media discussions into crystal-clear sentiment reports. Instantly analyze trending posts, detect what people love or dislike, and uncover neutral takes.
@@ -615,6 +682,20 @@ const Service = () => {
           <div className="mt-8 text-purple-300/70 text-sm">Made with care ❤️ to decode sentiment with clarity.</div>
         </div>
       </footer>
+
+      {/* Profile Sidebar */}
+      <ProfileSidebar
+        isOpen={showProfileSidebar}
+        onClose={() => setShowProfileSidebar(false)}
+        onSignupClick={() => setShowAuthModal(true)}
+      />
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        initialMode="signup"
+      />
     </div>
   );
 };
