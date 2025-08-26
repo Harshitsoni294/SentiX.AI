@@ -120,9 +120,11 @@ const SentiXLanding = () => {
                   <span>Start Analyzing</span>
                   <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </button>
-                <button className="border-2 border-gray-600 px-10 py-5 rounded-2xl text-lg font-semibold hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:border-gray-500">
+                <a href="https://drive.google.com/file/d/1bvqg14yvAXbGW2AlHWhXO33i70HCE83D/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+                  <button className="border-2 border-gray-600 px-10 py-5 rounded-2xl text-lg font-semibold hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:border-gray-500">
                   Watch Demo
-                </button>
+                  </button>
+                </a>
               </div>
             </div>
 
@@ -385,9 +387,11 @@ const SentiXLanding = () => {
                     <span>Get Sentiment Report Now</span>
                     <ArrowRight className="w-7 h-7 group-hover:translate-x-1 transition-transform" />
                   </button>
-                  <button className="border-2 border-gray-600 px-12 py-6 rounded-2xl text-xl font-bold hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:border-gray-500">
-                    Watch Demo
-                  </button>
+                  <a href="https://drive.google.com/file/d/1bvqg14yvAXbGW2AlHWhXO33i70HCE83D/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+                    <button className="border-2 border-gray-600 px-12 py-6 rounded-2xl text-xl font-bold hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:border-gray-500">
+                      Watch Demo
+                    </button>
+                  </a>
                 </div>
               </div>
             </div>
