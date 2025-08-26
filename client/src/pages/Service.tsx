@@ -265,6 +265,10 @@ const Service = () => {
     if (!user || !aiText || !selectedTopic || isGuest) return;
 
     try {
+      console.log('Attempting to save report for user:', user.id);
+      console.log('Topic:', selectedTopic);
+      console.log('Content length:', aiText.length);
+
       // Generate PDF and get base64 data
       const pdf = new jsPDF();
       pdf.text(aiText, 10, 10, { maxWidth: 180 });
@@ -277,22 +281,28 @@ const Service = () => {
         generated_at: new Date().toISOString()
       };
 
-      const { error } = await supabase
+      const reportData = {
+        user_id: user.id,
+        title: `Sentiment Report - ${selectedTopic}`,
+        content: aiText,
+        pdf_data: pdfBase64,
+        sentiment_data: sentimentData,
+        topic: selectedTopic,
+        posts_analyzed: posts.length
+      };
+
+      console.log('Report data to insert:', { ...reportData, pdf_data: '[PDF_DATA]', content: '[CONTENT]' });
+
+      const { data, error } = await supabase
         .from('sentiment_reports')
-        .insert({
-          user_id: user.id,
-          title: `Sentiment Report - ${selectedTopic}`,
-          content: aiText,
-          pdf_data: pdfBase64,
-          sentiment_data: sentimentData,
-          topic: selectedTopic,
-          posts_analyzed: posts.length
-        });
+        .insert(reportData)
+        .select();
 
       if (error) {
-        console.error('Error saving report:', error);
-        toast.error('Failed to save report');
+        console.error('Supabase error:', error);
+        toast.error(`Failed to save report: ${error.message}`);
       } else {
+        console.log('Report saved successfully:', data);
         toast.success('Report saved successfully!');
       }
     } catch (error) {

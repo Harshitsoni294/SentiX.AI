@@ -39,6 +39,8 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ isOpen, onClose,
     
     setLoading(true)
     try {
+      console.log('Fetching reports for user:', user.id)
+      
       const { data, error } = await supabase
         .from('sentiment_reports')
         .select('*')
@@ -46,14 +48,15 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ isOpen, onClose,
         .order('created_at', { ascending: false })
 
       if (error) {
-        toast.error('Failed to fetch reports')
-        console.error('Error fetching reports:', error)
+        console.error('Supabase fetch error:', error)
+        toast.error(`Failed to fetch reports: ${error.message}`)
       } else {
+        console.log('Fetched reports:', data)
         setReports(data || [])
       }
     } catch (error) {
+      console.error('Error fetching reports:', error)
       toast.error('An error occurred while fetching reports')
-      console.error('Error:', error)
     } finally {
       setLoading(false)
     }
