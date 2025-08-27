@@ -1,5 +1,4 @@
 # SentiX.AI Authentication Setup Guide
-
 ## Overview
 This guide explains how to set up authentication for SentiX.AI using Supabase, including user signup/login and sentiment report storage.
 
