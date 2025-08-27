@@ -79,6 +79,9 @@ GEMINI_API_KEY=your_gemini_api_key_here
 
 ---
 
+## 🤖 Development Environment
+This project is developed using **GitHub Copilot Workspace** - an advanced AI-powered development environment. See [COPILOT_USAGE.md](./COPILOT_USAGE.md) for details about the AI assistance features in use.
+
 ## 🤝 Contributing  
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.  
 
